@@ -40,12 +40,15 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 
 class StudentDeatilSerializer(serializers.ModelSerializer):
-    user = serializers.CharField(source="user.username")
+    student_name = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = models.Student
         fields = "__all__"
-        read_only_fields = ('roll_number', 'division', 'total_score', 'user')
+        read_only_fields = ('roll_number', 'division', 'total_score')
+
+    def get_student_name(self, instance):
+        return instance.user.username
 
     @staticmethod
     def get_roll_number(name):
