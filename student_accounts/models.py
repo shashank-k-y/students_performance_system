@@ -1,6 +1,9 @@
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.db import models
+from django.contrib.auth.models import User
+
 from rest_framework.authtoken.models import Token
 
 
@@ -8,3 +11,22 @@ from rest_framework.authtoken.models import Token
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+
+class Student(models.Model):
+    DIVISION_CHOICES = (
+        ('FIRST_CLASS', 'First_class'),
+        ('SECOND_CLASS', 'Second_class'),
+        ('FAIL', 'fail'),
+        ('DISTINCTION', 'distinction')
+    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    roll_number = models.CharField(max_length=10)
+    total_score = models.IntegerField(default=0)
+    division = models.CharField(max_length=20, choices=DIVISION_CHOICES)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"name: {self.user.username} | roll_number: {self.roll_number}"
