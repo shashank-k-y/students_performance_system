@@ -172,11 +172,12 @@ class TestStudentDetail(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
         response = self.client.get(path=url)
         self.assertEqual(response.status_code, 200)
+        first_student_detail = response.json()["results"][0]
         self.assertEqual(
-            response.json()[0]["student_name"], student.user.username
+            first_student_detail["student_name"], student.user.username
         )
         self.assertEqual(
-            response.json()[0]["roll_number"], student.roll_number
+            first_student_detail["roll_number"], student.roll_number
         )
 
     def test_get_details_of_specific_student_by_id(self):
@@ -202,5 +203,5 @@ class TestStudentDetail(APITestCase):
         url = '/student/detail/1/'
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
         response = self.client.get(path=url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json()["detail"], "Not found.")

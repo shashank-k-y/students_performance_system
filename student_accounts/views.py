@@ -6,6 +6,7 @@ from rest_framework import viewsets
 
 from student_accounts import serializers
 from student_accounts.models import create_auth_token, Student # noqa
+from student_accounts.paginations import StandardResultsSetPagination
 
 
 @api_view(['POST', ])
@@ -40,3 +41,4 @@ class StudentDetailsView(viewsets.ModelViewSet):
 
     queryset = Student.objects.all()
     serializer_class = serializers.StudentDeatilSerializer
+    pagination_class = StandardResultsSetPagination
