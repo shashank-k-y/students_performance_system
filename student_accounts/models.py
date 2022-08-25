@@ -14,16 +14,28 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 
 
 class Student(models.Model):
+    FIRST_CLASS = 'FC'
+    SECOND_CLASS = 'SC'
+    FAIL = 'F'
+    DISTINCTION = 'D'
+    NOT_AVAILABLE = 'NA'
+
     DIVISION_CHOICES = (
-        ('FIRST_CLASS', 'First_class'),
-        ('SECOND_CLASS', 'Second_class'),
-        ('FAIL', 'fail'),
-        ('DISTINCTION', 'distinction')
+        (FIRST_CLASS, 'First_class'),
+        (SECOND_CLASS, 'Second_class'),
+        (FAIL, 'fail'),
+        (DISTINCTION, 'distinction'),
+        (NOT_AVAILABLE, 'Not_available')
     )
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     roll_number = models.CharField(max_length=10)
     total_score = models.IntegerField(default=0)
-    division = models.CharField(max_length=20, choices=DIVISION_CHOICES)
+    division = models.CharField(
+        max_length=20,
+        choices=DIVISION_CHOICES,
+        default=NOT_AVAILABLE
+    )
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
