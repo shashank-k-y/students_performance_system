@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from score_card import models
+
+admin.site.register(models.Subject)
