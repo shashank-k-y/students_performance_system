@@ -30,7 +30,7 @@ class Student(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     roll_number = models.CharField(max_length=10)
-    total_score = models.IntegerField(default=0)
+    total_score = models.FloatField(default=0)
     division = models.CharField(
         max_length=20,
         choices=DIVISION_CHOICES,
