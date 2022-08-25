@@ -5,6 +5,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework.authtoken.models import Token
 
+from student_accounts import models
+
 
 class TestRegistrationTestCases(APITestCase):
 
@@ -110,3 +112,95 @@ class TestLogOut(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
         response = self.client.post(path=url)
         self.assertEqual(response.status_code, 200)
+
+
+class TestStudentDetail(APITestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='django', password='testpass'
+        )
+
+    def test_create_student_detail_success(self):
+        token = Token.objects.get(user__username='django')
+        url = '/student/detail/'
+        data = {
+            "user": self.user.id,
+            "active": True
+        }
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        response = self.client.post(path=url, data=data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json()['student_name'], self.user.username)
+
+    def test_create_student_detail_missing_fields(self):
+        token = Token.objects.get(user__username='django')
+        url = '/student/detail/'
+        data = {
+            "active": True
+        }
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        response = self.client.post(path=url, data=data)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['user'][0], 'This field is required.')
+
+    def test_create_student_for_existing_student(self):
+        models.Student.objects.create(
+            user=self.user, roll_number='12345', active=True
+        )
+        token = Token.objects.get(user__username='django')
+        data = {
+            "user": self.user.id,
+            "active": True
+        }
+        url = '/student/detail/'
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        response = self.client.post(path=url, data=data)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()['user'][0], "This field must be unique."
+        )
+
+    def test_get_all_student_detail_sucess(self):
+        student = models.Student.objects.create(
+            user=self.user,
+            roll_number='12345',
+            active=True
+        )
+        token = Token.objects.get(user__username='django')
+        url = '/student/detail/'
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        response = self.client.get(path=url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json()[0]["student_name"], student.user.username
+        )
+        self.assertEqual(
+            response.json()[0]["roll_number"], student.roll_number
+        )
+
+    def test_get_details_of_specific_student_by_id(self):
+        student = models.Student.objects.create(
+            user=self.user,
+            roll_number='12345',
+            active=True
+        )
+        token = Token.objects.get(user__username='django')
+        url = f'/student/detail/{student.id}/'
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        response = self.client.get(path=url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json()["student_name"], student.user.username
+        )
+        self.assertEqual(
+            response.json()["roll_number"], student.roll_number
+        )
+
+    def test_get_details_student_doesnot_exists(self):
+        token = Token.objects.get(user__username='django')
+        url = '/student/detail/1/'
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        response = self.client.get(path=url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["detail"], "Not found.")
