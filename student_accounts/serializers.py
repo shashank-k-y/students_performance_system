@@ -1,6 +1,11 @@
+import random
+import string
+import datetime
 from django.contrib.auth.models import User
 
 from rest_framework import serializers
+
+from student_accounts import models
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -32,3 +37,27 @@ class RegistrationSerializer(serializers.ModelSerializer):
         account.set_password(password)
         account.save()
         return account
+
+
+class StudentDeatilSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source="user.username")
+
+    class Meta:
+        model = models.Student
+        fields = "__all__"
+        read_only_fields = ('roll_number', 'division', 'total_score', 'user')
+
+    @staticmethod
+    def get_roll_number(name):
+        unique_number = ''.join(
+            random.choices(string.ascii_uppercase + string.digits, k=3)
+        )
+        year = datetime.datetime.today().year
+        chars_from_name = name[:3]
+        return "".join(str(year) + chars_from_name + unique_number)
+
+    def create(self, validated_data):
+        name = validated_data['user'].username
+        roll_number = self.get_roll_number(name=name)
+        validated_data.update(roll_number=roll_number)
+        return models.Student.objects.create(**validated_data)
