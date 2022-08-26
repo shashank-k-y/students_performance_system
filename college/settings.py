@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'student_accounts',
     'rest_framework',
     'rest_framework.authtoken',
-    'score_card'
 ]
 
 MIDDLEWARE = [
