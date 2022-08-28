@@ -37,6 +37,9 @@ class ScoreSerializer(serializers.ModelSerializer):
             name=validated_data['subject']['name']
         )
 
+        if student.subject.objects.count() >= 5:
+            student.uploaded_all_subjects = True
+
         try:
             return Score.objects.create(
                 student=student, subject=subject, score=score
