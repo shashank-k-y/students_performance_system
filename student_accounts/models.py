@@ -65,6 +65,10 @@ class Student(models.Model):
     def __str__(self) -> str:
         return f"name: {self.user.username} | roll_number: {self.roll_number}"
 
+    @property
+    def username(self):
+        return self.user.username
+
 
 class Score(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
