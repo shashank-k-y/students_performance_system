@@ -58,6 +58,7 @@ class Student(models.Model):
         default=NOT_AVAILABLE
     )
     subject = models.ManyToManyField(Subject, through="Score")
+    uploaded_all_subjects = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -66,8 +67,20 @@ class Student(models.Model):
         return f"name: {self.user.username} | roll_number: {self.roll_number}"
 
     @property
-    def username(self):
-        return self.user.username
+    def get_division(self):
+        sub_count = self.subject.objects.count()
+        percentage = 100 * float(self.total_score)/float(sub_count * 100)
+        division = ''
+        if percentage > 90:
+            division = "distinction"
+        elif percentage > 70:
+            division = "first class"
+        elif percentage > 50:
+            division = "second class"
+        else:
+            division = "fail"
+        return division
+
 
 
 class Score(models.Model):
