@@ -169,7 +169,7 @@ status code 200:
     ]
 }
 ```
-## get student details by i
+## get student details by id
 
 method: GET
 URL: /student/detail/{id}
