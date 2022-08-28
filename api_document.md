@@ -62,7 +62,7 @@ status code 200:
 
 ```json
 {
-'token': 107ac919be1e2c0152c667b9db98ecfc5d200a13
+"token": 107ac919be1e2c0152c667b9db98ecfc5d200a13
 }
 ```
 
