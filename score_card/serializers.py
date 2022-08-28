@@ -23,15 +23,20 @@ class ScoreSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context['request'].user
+        score = validated_data['score']
+
         try:
             student = Student.objects.get(user=user)
         except ObjectDoesNotExist:
             raise serializers.ValidationError("Student does'nt exists.")
 
+        student.total_score += score
+        student.save()
+
         subject, is_created = Subject.objects.get_or_create(
             name=validated_data['subject']['name']
         )
-        score = validated_data['score']
+
         try:
             return Score.objects.create(
                 student=student, subject=subject, score=score
