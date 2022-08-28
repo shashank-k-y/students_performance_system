@@ -197,3 +197,96 @@ status code 200:
 }
 ```
 
+## 5 add scores api
+
+method: POST
+URL: /score_card/detail/
+
+header:
+Authorization: Token 'access token'
+
+response:
+
+status code 200
+```json
+{
+    "id": 1,
+    "student": {
+        "id": 1,
+        "student_name": "sagar",
+        "subject": [
+            "name: physics"
+        ],
+        "roll_number": "2022sagZZS",
+        "total_score": 192.0,
+        "division": "NA",
+        "uploaded_all_subjects": false,
+        "active": true,
+        "created_at": "2022-08-28T16:24:11.725744Z",
+        "updated_at": "2022-08-28T16:50:09.933898Z",
+        "user": 2
+    },
+    "subject": {
+        "id": 1,
+        "name": "physics"
+    },
+    "score": 96.0,
+    "created_at": "2022-08-28T16:50:09.937290Z",
+    "updated_at": "2022-08-28T16:50:09.937316Z"
+}
+```
+
+status code 400:
+
+```json
+{
+    "subject": {
+        "name": [
+            "\"Sugar\" is not a valid choice."
+        ]
+    }
+}
+```
+
+## 6 overall performance api
+
+method: GET
+URL: /score_card/overall-performance/
+headers:
+Authorization: Token 'access token'
+
+response:
+
+status code 200:
+
+```json
+{
+    "total_score": 669.0,
+    "division": "distinction",
+    "overral_top_score": 669.0,
+    "overral_top_performer": "sagar"
+}
+```
+
+## 7 individual performance api
+
+method: GET
+URL: /score_card/performance/<str:subject-name>/
+
+headers:
+Authorization: Token 'access token'
+
+response:
+
+status code 200:
+
+```json
+{
+    "subject": "physics",
+    "individual_score": 96.0,
+    "top_score": 96.0,
+    "top_scorer": "sagar"
+}
+```
+
+
