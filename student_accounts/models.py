@@ -13,6 +13,27 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 
 
+class Subject(models.Model):
+    PHYSICS = "physics"
+    CHEMISTRY = "chemistry"
+    BIOLOGY = "biology"
+    COMPUTER_SCIENCE = "computer_science"
+    PSYCHOLOGY = "psychology"
+    FINANCE = "finance"
+    SUBJECT_NAMES = (
+        (PHYSICS, "physics"),
+        (CHEMISTRY, "chemistry"),
+        (BIOLOGY, 'biology'),
+        (COMPUTER_SCIENCE, 'computer_science'),
+        (PSYCHOLOGY, 'psychology'),
+        (FINANCE, "finance")
+    )
+    name = models.CharField(max_length=50, choices=SUBJECT_NAMES)
+
+    def __str__(self) -> str:
+        return f"name: {self.name}"
+
+
 class Student(models.Model):
     FIRST_CLASS = 'FC'
     SECOND_CLASS = 'SC'
@@ -36,9 +57,24 @@ class Student(models.Model):
         choices=DIVISION_CHOICES,
         default=NOT_AVAILABLE
     )
+    subject = models.ManyToManyField(Subject, through="Score")
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
         return f"name: {self.user.username} | roll_number: {self.roll_number}"
+
+
+class Score(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    score = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = [['student', 'subject']]
+
+    def __str__(self) -> str:
+        return f"{self.student} | {self.subject} | score: {self.score}"
