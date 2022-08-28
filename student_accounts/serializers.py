@@ -41,6 +41,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 class StudentDeatilSerializer(serializers.ModelSerializer):
     student_name = serializers.SerializerMethodField(read_only=True)
+    subject = serializers.StringRelatedField(many=True, read_only=True)
 
     class Meta:
         model = models.Student
