@@ -68,7 +68,6 @@ class Student(models.Model):
 
     @property
     def get_division(self):
-        breakpoint()
         sub_count = self.subject.count()
         percentage = 100 * float(self.total_score)/float(sub_count * 100)
         division = ''

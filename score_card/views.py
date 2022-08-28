@@ -58,7 +58,8 @@ class OverallPerformance(APIView):
                 "Student does not exist",
                 status=status.HTTP_404_NOT_FOUND
             )
-        total_score = total_score if student.uploaded_all_subjects else "please add all subjects to view total_score" # noqa
+
+        total_score = student.total_score if student.uploaded_all_subjects else "please add all subjects to view total_score" # noqa
 
         top_student = Student.objects.filter(
             uploaded_all_subjects=True
