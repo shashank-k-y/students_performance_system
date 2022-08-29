@@ -205,6 +205,12 @@ URL: /score_card/detail/
 header:
 Authorization: Token 'access token'
 
+| parameters     | type       |
+| -------------- | -----------|
+| subject        | json       |
+| score          | float/int  |
+
+
 response:
 
 status code 200
